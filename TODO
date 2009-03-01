@@ -1,0 +1,5 @@
+- Handle static files automatically
+ - Warble should probably walk all files in public and add them to the appengine-web.xml file
+- Create a framework for interacting with DataStore
+- Create a small framework for interacting with UserService
+

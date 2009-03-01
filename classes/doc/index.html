@@ -1,0 +1,167 @@
+<html>
+  <head>
+    <title>dynalang.org</title>
+  </head>
+  <body>
+    <h1>dynalang.org</h1>
+    <hr>
+    <table width="100%" border="0">
+      <tr>
+        <td valign="top">
+          <table border=0 cellspacing=1 cellpadding=2>
+            <tr><td bgcolor="#70B070"><a href="index.html">Main page</a></td></tr>
+            <tr><td bgcolor="#90D090">&nbsp;&nbsp;<a href="index.html#download">Download</a></td></tr>
+            <tr><td bgcolor="#90D090">&nbsp;&nbsp;<a href="index.html#developerResources">Developer resources</a></td></tr>
+            <tr><td bgcolor="#90D090">&nbsp;&nbsp;<a href="javadoc/index.html">JavaDoc</a></td></tr>
+            <tr><td bgcolor="#90D090">&nbsp;&nbsp;<a href="index.html#licensing">Licensing</a></td></tr>
+            <tr><td bgcolor="#90D090">&nbsp;&nbsp;<a href="index.html#whoWeAre">Who&nbsp;we&nbsp;are</a></td></tr>
+
+            <tr><td bgcolor="#70B070"><a href="http://sourceforge.net/projects/dynalang/">SourceForge&nbsp;project&nbsp;page</a></td></tr>
+          </table>
+        </td>
+        <td>
+          <p>
+            dynalang.org is currently the home of the generic metaobject protocol
+            specification for dynamic programming languages on the JVM. If these
+            words don't mean anything to you, don't worry - chances are you are 
+            not involved in business of actually building runtime environments 
+            for dynamic programming languages. Such runtime environment builders
+            are our sole target audience at the moment, although we hope to
+            eventually expand the focus to a broader range of topics involving
+            dynamic languages - both creation and usage, both on JVM and CLR. 
+          </p>
+          <h1>The JVM Dynamic Languages Metaobject Protocol Library</h1>
+          <p>
+            This library aims to make it possible for objects created by a
+            runtime for one dynamic language to be passed to and manipulated by
+            a different dynamic language, running within the same JVM. More
+            generally, it aims to provide a facility where an arbitrary system
+            (usually a language runtime) can intuitively manipulate any
+            arbitrary object model built atop of Java objects (usually the 
+            native object model of some other language). 
+          </p><p>
+            Basically, it provides a unified mechanism that all dynamic
+            languages on the JVM can use to inter-operably manipulate their own
+            objects as well as objects from any other language that also uses
+            this mechanism.
+          </p><p>
+            It strives to achieve this goal not by defining "One True Object", a
+            single interface to be implemented by all Java objects that
+            represent objects of the dynamic languages in the JVM, but rather by
+            providing an extensible metaobject protocol (MOP) mechanism, as
+            first formulated in the <a
+            href="http://www.szegedi.org/articles/wrappersOrNavigators.html">
+            "In-process cross-language object interaction: adapters or
+            navigators?"</a> article. The idea is to completely throw away the
+            idea of a dedicated interface on objects themselves, and having to
+            wrap foreign objects into adapter objects that expose the expected
+            interface. Instead, the operations on objects themselves are
+            encapsulated behind MOP objects (you can also think about them as
+            being the "navigators" and "manipulators" for the objects they know
+            about), with usually only a single MOP required per language
+            implementation.
+          </p><p>
+            The basic usage difference is that a dynamic language runtime will 
+            retrieve a property on an object <i>not</i> by using code like this:
+            <code>((MyDynamicInterface)obj).get("foo");</code>
+            but rather it will use a MOP:
+            <code>metaobjectProtocol.get(obj, "foo");</code>
+          </p><p>
+            The real strength of the approach lies in extensibility and
+            pluggability of MOPs. MOPs can be easily composed, so if you compose
+            your language's native MOP with other languages' MOPs, your code
+            will be able to natively manipulate those other languages' objects.
+            You can have a MOP for DOM objects as well to natively add XML
+            manipulating abilities into your languages. Finally, a JavaBeans MOP
+            is provided as standard component in the library - you can add it as
+            the last element of your composite MOP so that your language can
+            manipulate any POJO directly if no other MOP recognizes the object.
+            Full range of Java amenities, including optimized runtime resolution
+            of overloaded methods and support for JDK 1.5 variable arguments is
+            available.
+          </p><p>
+            The secret of composability is MOPs ability to declare it has no
+            authority to perform an operation on an object. When an operation is
+            attempted in a composite MOP, all its element MOPs will be attempted
+            in turn while they claim no authority for it. Only when one MOP
+            either performs the operation or authoritatively decides it must
+            fail is the operation outcome final. Note that the authority
+            declaration is very fine-grained: it is per operation and per
+            object. It is therefore much more versatile than the wrapper
+            interfaces approach: when using interfaces, a wrapper class must
+            decide up-front which interfaces to implement on the object. A MOP
+            can decide based on the actual state of the object whether it can
+            perform an operation. This can also be handily used to extend any
+            objects with language specific meta-properties. Since the API allows
+            any object, not just strings, to be used as property identifiers, it
+            is easy to use implementation-private objects as property IDs for
+            things like ECMAScript "prototype" property and similar. A
+            theoretical ECMAScript MOP would thus answer the get and put
+            requests for the prototype property of a POJO, but would claim no
+            authority for get and put requests for other properties, letting
+            those fall through to the JavaBeans MOP.
+          </p>
+          <a name="download"><h1>Download</h1>
+          <p>
+              You can download builds from the project's SourceForge 
+              <a href="http://sourceforge.net/project/showfiles.php?group_id=200472">
+              download page</a>
+          </p>
+          <p>
+          <a name="developerResources"><h1>Developer resources</h1>
+          <p>
+            The project is hosted at SourceForge, under <a
+            href="http://www.sf.net/projects/dynalang"
+            target="_top">http://www.sf.net/projects/dynalang</a>.
+          </p><p>
+            If you check out the latest version from SVN, try running <code>ant
+            test</code>. This produces both a JUnit test report at
+            <code>build/test/report/index.html</code> and test coverage report
+            at <code>build/coverage/report/index.html</code>. <code>ant doc</code>
+            will generate the browsable documentation in <code>build/doc</code>.
+          </p>
+          <p>
+            The <a href="javadoc/index.html">JavaDoc</a> overview page also
+            contains few pointers for getting started using and extending the
+            library.
+          </p>
+          <p>
+            This software can be discussed in the 
+            <a href="http://groups.google.com/group/jvm-languages">JVM 
+            Languages Google group</a>  
+          <p>
+            Volunteers welcome for all aspects of the project.
+          </p>
+          <table border="0">
+            <tr>
+              <td>
+                <a name="licensing"><h1>Licensing</h1></a>
+                <p>
+                  <tt>org.dynalang.mop</tt> is Open Source Software, distributed
+                  under the terms of <a
+                  href="http://www.apache.org/licenses/LICENSE-2.0.html"> Apache
+                  License, version 2.0</a>.
+                </p>
+                <a name="whoWeAre"><h1>Who we are</h1></a>
+                <p>
+                  This project was founded by <a href="http://www.szegedi.org"> Attila
+                  Szegedi</a>.
+                </p>
+              </td>
+              <td width="110" align="right">
+                <a href="http://www.opensource.org/docs/definition.php">
+                  <img src="http://opensource.org/trademarks/opensource/web/opensource-110x95.png" border="0" width="110" height="95" alt="Open Source definition">
+                </a>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <table border=0 width="100%">
+    <tr><td valign="middle" align="right">
+      <a href="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=200472&amp;type=1" border="0" alt="SourceForge Logo"></a>
+    </td></tr>
+    </table>
+  </body>
+</html>

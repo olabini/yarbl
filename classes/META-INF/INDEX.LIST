@@ -1,0 +1,12 @@
+JarIndex-Version: 1.0
+
+jffi.jar
+com
+com/kenai
+com/kenai/jffi
+jni
+jni/Darwin
+jni/amd64-SunOS
+jni/i386-Linux
+jni/x86-SunOS
+

@@ -1,3 +1,5 @@
+- Split jruby-complete into two automatically - putting standard library in another jar file
+- Prune files in vendor/rails to get well beneath the limit
 - Handle static files automatically
  - Warble should probably walk all files in public and add them to the appengine-web.xml file
 - Create a framework for interacting with DataStore

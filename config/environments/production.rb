@@ -7,8 +7,38 @@ config.cache_classes = true
 # Enable threaded mode
 # config.threadsafe!
 
+class ServletContextLogger
+  def debug(progname = nil, &block)
+    log(:DEBUG, progname, &block)
+  end
+
+  def error(progname = nil, &block)
+    log(:ERROR, progname, &block)
+  end
+
+  def fatal(progname = nil, &block)
+    log(:FATAL, progname, &block)
+  end
+
+  def info(progname = nil, &block)
+    log(:INFO, progname, &block)
+  end
+
+  def warn(progname = nil, &block)
+    log(:WARN, progname, &block)
+  end
+  
+  def log(severity, progname, &block)
+    message = progname || block.call
+    $servlet_context.log("#{severity}: #{message}")
+  end
+  
+  def method_missing(name, *args, &block)
+  end
+end
+
 # Use a different logger for distributed setups
-# config.logger = SyslogLogger.new
+config.logger = ServletContextLogger.new
 
 # Full error reports are disabled and caching is turned on
 config.action_controller.consider_all_requests_local = false

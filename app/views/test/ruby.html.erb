@@ -1,0 +1,13 @@
+
+<h2>Evil!</h2>
+
+<% if @query %>
+<p><i><%=h @querty%></i></p>
+<pre>
+<%=h @result.inspect%>
+</pre>
+<% end %>
+
+<% form_tag do -%>
+<%= text_area_tag 'query', @query, :rows => 10, :cols => 25 %> <%= submit_tag 'eval' %>
+<% end %>

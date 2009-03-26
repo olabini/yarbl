@@ -17,4 +17,10 @@ class TestController < ActionController::Base
       end
     end
   end
+  
+  def run_tests
+    require 'yak_test'
+    render :text => YAKTest.run_tests(params[:yak])
+    headers['Content-type'] = 'text/plain'
+  end
 end

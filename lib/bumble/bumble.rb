@@ -8,6 +8,7 @@ module Bumble
     import com.google.appengine.api.datastore.KeyFactory
     import com.google.appengine.api.datastore.Key
     import com.google.appengine.api.datastore.EntityNotFoundException
+    import com.google.appengine.api.datastore.Query
     Service = DatastoreServiceFactory.datastore_service
   end
 
@@ -64,7 +65,17 @@ DEF
     end
 
     def get(key)
-      ent = DS::Service.get(DS::KeyFactory.create_key(self.name, key))
+      create_from_entity(DS::Service.get(DS::KeyFactory.create_key(self.name, key)))
+    end
+    
+    def all
+      DS::Service.prepare(DS::Query.new(self.name)).as_iterable.map do |ent|
+        create_from_entity(ent)
+      end
+    end
+    
+    private
+    def create_from_entity(ent)
       obj = self.new
       obj.instance_variable_set :@__entity, ent
       obj

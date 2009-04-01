@@ -67,7 +67,11 @@ DEF
     def get(key)
       create_from_entity(DS::Service.get(DS::KeyFactory.create_key(self.name, key)))
     end
-
+    
+    def delete(key)
+      DS::Service.delete([DS::KeyFactory.create_key(self.name, key)].to_java(DS::Key))
+    end
+    
     # returns either an object matching the conditions, or nil
     def find(conditions = {})
       query = DS::Query.new(self.name)      

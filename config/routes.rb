@@ -42,6 +42,7 @@ ActionController::Routing::Routes.draw do |map|
   map.root :controller => "blogs", :action => "index"
   map.blogs 'blogs', :controller => "blogs", :action => "index"
   map.create_blog 'blogs/create', :controller => "blogs", :action => "create"
+  map.remove_blog 'blogs/remove/:id', :controller => "blogs", :action => "remove"
   map.blog 'blog/:id', :controller => "blogs", :action => "blog"
 #   map.post 'blog/:blog_id/:post_id', :controller => "blogs", :action => "post"
   

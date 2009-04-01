@@ -1,6 +1,6 @@
 class BlogsController < ApplicationController
   layout 'blog'
-  require_admin :create
+  require_admin :new, :create
   
   def index
     @blogs = Blog.all

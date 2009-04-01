@@ -6,3 +6,11 @@
     <li><%=link_to b.name, blog_url(b.key) %></li>
   <% end %>
 </ul>
+
+<% if @admin %>
+<br/>
+<br/>
+<% form_tag create_blog_url do -%>
+  <%=text_field_tag :title %> <%=submit_tag "Create new blog"%>
+<% end %>
+<% end %>

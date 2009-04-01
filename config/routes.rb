@@ -41,8 +41,9 @@ ActionController::Routing::Routes.draw do |map|
 
   map.root :controller => "blogs", :action => "index"
   map.blogs 'blogs', :controller => "blogs", :action => "index"
+  map.create_blog 'blogs/create', :controller => "blogs", :action => "create"
   map.blog 'blog/:id', :controller => "blogs", :action => "blog"
-  map.post 'blog/:blog_id/:post_id', :controller => "blogs", :action => "post"
+#   map.post 'blog/:blog_id/:post_id', :controller => "blogs", :action => "post"
   
   map.connect ':controller/:action/:id'
   map.connect ':controller/:action/:id.:format'

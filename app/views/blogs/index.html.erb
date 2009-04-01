@@ -1,0 +1,8 @@
+
+<h1>Blogs</h1>
+
+<ul>
+  <% @blogs.each do |b| %>
+    <li><%=link_to b.name, blog_url(b.key) %></li>
+  <% end %>
+</ul>

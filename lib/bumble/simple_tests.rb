@@ -45,16 +45,11 @@ YAKTest.tests do
       eq TestBumbleTwo.all.map { |tt| tt.key }, [k1,k2,k3]
     ensure 
       begin 
-        t1.delete!
-      rescue Exception
-      end
-      begin 
-        t2.delete!
-      rescue Exception
-      end
-      begin 
-        t3.delete!
-      rescue Exception
+        TestBumbleTwo.all.each do |ee|
+          ee.delete!
+        end
+      rescue Exception => e
+        $servlet_context.log(e)
       end
     end
   end

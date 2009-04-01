@@ -67,8 +67,23 @@ DEF
     def get(key)
       create_from_entity(DS::Service.get(DS::KeyFactory.create_key(self.name, key)))
     end
+
+    # returns either an object matching the conditions, or nil
+    def find(conditions = {})
+      query = DS::Query.new(self.name)      
+      conditions.each do |k, v|
+        query = query.add_filter(k.to_s, DS::Query::FilterOperator::EQUAL, v)
+      end
+
+      result = DS::Service.prepare(query).asSingleEntity
+      if result
+        create_from_entity(result)
+      else
+        result
+      end
+    end
     
-    def all
+    def all(conditions = {})
       DS::Service.prepare(DS::Query.new(self.name)).as_iterable.map do |ent|
         create_from_entity(ent)
       end

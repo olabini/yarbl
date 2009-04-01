@@ -1,0 +1,8 @@
+<h1><%=@blog.name%></h1>
+
+<% @blog.posts.each do |p| %>
+<h3><%=p.title%></h3>
+<pre>
+<%=p.content%>
+</pre>
+<% end %>

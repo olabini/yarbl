@@ -1,4 +1,6 @@
-class TestController < ActionController::Base
+class TestController < ApplicationController
+  layout 'blog'
+
   def index
     render :text => "Hello world! Current date and time is: #{Time.now}"
   end

@@ -1,0 +1,29 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Yet Another Ruby Blog</title>
+  </head>
+  <body>
+    <table border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td style="width: 50em; background: #DDD;" height="24" valign="top" align="center">
+          <% if @user %>
+            Welcome <%=@person.sur_name%>      |      <%=link_to "Log out!", BeeU.logout(request)%>
+          <% else %>
+            <%=link_to "Log in!", BeeU.login(request)%>
+          <% end -%>
+        </td>
+      </tr>
+      <tr>
+      <td>
+        <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td valign="top" align="left">
+              <%=yield%>
+            </td>
+          </tr>
+        </table>
+      </td>
+      </tr>
+    </table>
+  </body>
+</html>

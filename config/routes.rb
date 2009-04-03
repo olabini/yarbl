@@ -39,12 +39,15 @@ ActionController::Routing::Routes.draw do |map|
   # Note: These default routes make all actions in every controller accessible via GET requests. You should
   # consider removing the them or commenting them out if you're using named routes and resources.
 
-  map.root :controller => "blogs", :action => "index"
+  map.root :controller => "blogs", :action => "start"
   map.blogs 'blogs', :controller => "blogs", :action => "index"
   map.create_blog 'blogs/create', :controller => "blogs", :action => "create"
   map.remove_blog 'blogs/remove/:id', :controller => "blogs", :action => "remove"
+  map.new_post 'blog/:id/new', :controller => "blogs", :action => "new_post"
+  map.create_post 'blog/:id/create', :controller => "blogs", :action => "create_post"
   map.blog 'blog/:id', :controller => "blogs", :action => "blog"
-#   map.post 'blog/:blog_id/:post_id', :controller => "blogs", :action => "post"
+  map.post 'blog/:blog_id/:post_id', :controller => "blogs", :action => "post"
+  map.remove_post 'post/:id/remove', :controller => "blogs", :action => "remove_post"
   
   map.connect ':controller/:action/:id'
   map.connect ':controller/:action/:id.:format'

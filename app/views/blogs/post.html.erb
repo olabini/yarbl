@@ -1,0 +1,9 @@
+
+<h1><%=@post.title%></h1>
+<p><i>In <%=link_to @blog.name, blog_url(@blog)%></i></p>
+<% if @admin %>
+<p><i><%=link_to("Remove post", remove_post_url(@post), {:method => :post})%></i></p>
+<% end %>
+<pre>
+<%=@post.content%>
+</pre>

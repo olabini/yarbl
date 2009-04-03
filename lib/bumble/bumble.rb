@@ -5,21 +5,30 @@ module Bumble
   module DS
     import com.google.appengine.api.datastore.DatastoreServiceFactory
     import com.google.appengine.api.datastore.Entity
+    import com.google.appengine.api.datastore.FetchOptions
     import com.google.appengine.api.datastore.KeyFactory
     import com.google.appengine.api.datastore.Key
     import com.google.appengine.api.datastore.EntityNotFoundException
     import com.google.appengine.api.datastore.Query
+    import com.google.appengine.api.datastore.Text
     Service = DatastoreServiceFactory.datastore_service
   end
 
   module InstanceMethods
-    def initialize(*args)
-      super
+    def initialize(attrs = {}, *args)
+      super(*args)
       @__entity = DS::Entity.new(self.class.name)
+      attrs.each do |k,v|
+        self.send "#{k}=", v
+      end
     end
 
     def key
       __ds_key.get_id
+    end
+    
+    def to_param
+      self.key
     end
     
     def save!
@@ -27,7 +36,7 @@ module Bumble
     end
     
     def delete!
-      DS::Service.delete(__ds_key)
+      self.class.delete(self.key)
     end
 
     def __ds_key
@@ -37,18 +46,45 @@ module Bumble
     def __ds_get(name)
       name = name.to_s
       if @__entity.has_property(name)
-        @__entity.get_property(name)
+        ret = @__entity.get_property(name)
+        if ret.is_a?(DS::Text)
+          ret.value
+        else
+          ret
+        end
       else
         nil
       end
     end
     
     def __ds_set(name, value)
-      @__entity.set_property(name.to_s, value)
+      if value.is_a?(String) && value.length > 499
+        @__entity.set_property(name.to_s, DS::Text.new(value))
+      else
+        @__entity.set_property(name.to_s, value)
+      end
     end
   end
 
   module ClassMethods
+    def belongs_to(attr, type)
+      self.ds "#{attr}_id"
+      type_name = (type.is_a?(Symbol) || type.is_a?(String)) ? type : type.name
+      self.class_eval <<DEF
+  def #{attr}
+    if self.#{attr}_id
+        #{type_name}.get(self.#{attr}_id)
+    else
+      nil
+    end
+  end
+
+  def #{attr}=(value)
+    self.#{attr}_id = value.key
+  end
+DEF
+    end
+    
     # defines zero or more data store attributes - will create attribute accessors for these
     def ds(*names)
       names.each do |name|
@@ -65,11 +101,11 @@ DEF
     end
 
     def get(key)
-      create_from_entity(DS::Service.get(DS::KeyFactory.create_key(self.name, key)))
+      create_from_entity(DS::Service.get(DS::KeyFactory.create_key(self.name, key.to_i)))
     end
     
     def delete(key)
-      DS::Service.delete([DS::KeyFactory.create_key(self.name, key)].to_java(DS::Key))
+      DS::Service.delete([DS::KeyFactory.create_key(self.name, key.to_i)].to_java(DS::Key))
     end
     
     # returns either an object matching the conditions, or nil
@@ -86,9 +122,50 @@ DEF
         result
       end
     end
+
+    def create(attrs = {})
+      val = new(attrs)
+      val.save!
+      val
+    end
     
-    def all(conditions = {})
-      DS::Service.prepare(DS::Query.new(self.name)).as_iterable.map do |ent|
+    def all(conditions = {}, options = {})
+      q = DS::Query.new(self.name)
+      conditions.each do |k, v|
+        q = q.add_filter(k.to_s, DS::Query::FilterOperator::EQUAL, v)
+      end
+      
+      fo = nil
+      
+      if options[:limit]
+        fo = DS::FetchOptions::Builder.with_limit(options[:limit])
+      end
+
+      if options[:offset]
+        if fo
+          fo = fo.offset(options[:offset])
+        else
+          fo = DS::FetchOptions::Builder.with_limit(options[:offset])
+        end
+      end
+      
+      if options[:order]
+        q = q.add_sort(options[:order].to_s)
+      end
+
+      if options[:iorder]
+        q = q.add_sort(options[:iorder].to_s, DS::Query::SortDirection::DESCENDING)
+      end
+
+      $servlet_context.log "doing search: #{q.to_s}"
+      
+      iter = if fo
+               DS::Service.prepare(q).as_iterable(fo)
+             else
+               DS::Service.prepare(q).as_iterable
+             end
+      
+      iter.map do |ent|
         create_from_entity(ent)
       end
     end

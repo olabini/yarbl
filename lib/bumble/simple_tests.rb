@@ -42,14 +42,14 @@ YAKTest.tests do
       t3.save!
       k1, k2, k3 = t1.key, t2.key, t3.key
       
-      eq TestBumbleTwo.all.map { |tt| tt.key }, [k1,k2,k3]
+      eq TestBumbleTwo.all.map { |tt| tt.key }.sort, [k1,k2,k3].sort
     ensure 
       begin 
         TestBumbleTwo.all.each do |ee|
           ee.delete!
         end
       rescue Exception => e
-        $servlet_context.log(e)
+        $servlet_context.log(e.inspect)
       end
     end
   end

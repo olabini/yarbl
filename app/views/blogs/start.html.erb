@@ -1,0 +1,10 @@
+<h1>Latest posts</h1>
+
+<% @posts.each do |p| %>
+<hr/>
+<h3><%=link_to p.title, post_url(p.blog, p)%><%= @admin ? " - <i>#{link_to("Remove post", remove_post_url(p), {:method => :post})}</i>" : ""%></h3>
+<p><i>In <%=link_to p.blog.name, blog_url(p.blog)%></i></p>
+<pre>
+<%=p.content%>
+</pre>
+<% end %>

@@ -1,7 +1,12 @@
 <h1><%=@blog.name%></h1>
 
-<% @blog.posts.each do |p| %>
-<h3><%=p.title%></h3>
+<% if @admin %>
+  <%=link_to "New post", new_post_url(@blog) %><br/>
+<% end %>
+
+<% @posts.each do |p| %>
+<hr/>
+<h3><%=link_to p.title, post_url(@blog, p)%><%= @admin ? " - <i>#{link_to("Remove post", remove_post_url(p), {:method => :post})}</i>" : ""%></h3>
 <pre>
 <%=p.content%>
 </pre>

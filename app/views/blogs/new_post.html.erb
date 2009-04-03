@@ -1,0 +1,8 @@
+<h1>New post</h1>
+<p><i>In <%=link_to @blog.name, blog_url(@blog)%></i></p>
+
+<% form_tag create_post_url(@blog) do -%>
+  <p><%=text_field_tag :title, nil, :size => 50 %></p>
+  <p><%=text_area_tag :content, nil, :rows => 40, :cols => 70 %></p>
+  <p><%=submit_tag "Publish post"%></p>
+<% end %>

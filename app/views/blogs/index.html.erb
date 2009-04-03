@@ -3,7 +3,7 @@
 
 <table cellpadding="0" border="0" cellspacing="0" style="width: 30em">
   <% @blogs.each do |b| %>
-    <tr><td align="left"><%=link_to b.name, blog_url(b.key) %></td><%= @admin ? "<td align=\"right\">#{link_to("Remove blog", remove_blog_url(b.key), {:method => :post})}</td>" : ""%></tr>
+    <tr><td align="left"><%=link_to b.name, blog_url(b.key) %></td><%= @admin ? "<td align=\"right\">#{link_to("Remove blog", remove_blog_url(b), {:method => :post})}</td>" : ""%></tr>
   <% end %>
 </table>
 

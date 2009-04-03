@@ -2,20 +2,10 @@ class Blog
   include Bumble
 
   ds :name, :owner_id, :created_at
+  belongs_to :owner, Person
+  #  has_many :posts, :Post, :iorder => :created_at
 
-  def owner
-    if self.owner_id
-      Person.get(self.owner_id)
-    else
-      nil
-    end
-  end
-
-  def owner=(person)
-    self.owner_id = person.key
-  end
-  
   def posts
-    []
+    Post.all({:blog_id => self.key}, :iorder => :created_at)
   end
 end

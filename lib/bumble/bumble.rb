@@ -81,15 +81,20 @@ DEF
       type_name = (type.is_a?(Symbol) || type.is_a?(String)) ? type : type.name
       self.class_eval <<DEF
   def #{attr}
-    if self.#{attr}_id
-        #{type_name}.get(self.#{attr}_id)
-    else
-      nil
+    if defined?(@#{attr})
+      @#{attr}
+    else 
+      @#{attr} = if self.#{attr}_id
+          #{type_name}.get(self.#{attr}_id)
+        else
+          nil
+        end
     end
   end
 
   def #{attr}=(value)
     self.#{attr}_id = value.key
+    @#{attr} = value
   end
 DEF
     end
@@ -99,11 +104,16 @@ DEF
       names.each do |name|
         self.class_eval <<DEF
   def #{name}
-    __ds_get(#{name.inspect})
+    if defined?(@#{name})
+      @#{name}
+    else 
+      @#{name} = __ds_get(#{name.inspect})
+    end
   end
 
   def #{name}=(value)
     __ds_set(#{name.inspect}, value)
+    @#{name} = value
   end
 DEF
       end

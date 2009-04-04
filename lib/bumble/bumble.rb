@@ -67,6 +67,15 @@ module Bumble
   end
 
   module ClassMethods
+    def has_many(attr, type, key, options = {})
+      type_name = (type.is_a?(Symbol) || type.is_a?(String)) ? type : type.name
+      self.class_eval <<DEF
+  def #{attr}
+    #{type_name}.all({#{key.inspect} => self.key}, #{options.inspect})
+  end
+DEF
+    end
+    
     def belongs_to(attr, type)
       self.ds "#{attr}_id"
       type_name = (type.is_a?(Symbol) || type.is_a?(String)) ? type : type.name

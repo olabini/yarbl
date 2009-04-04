@@ -1,12 +1,15 @@
 <h1><%=@blog.name%></h1>
 
 <% if @admin %>
-  <%=link_to "New post", new_post_url(@blog) %><br/>
+  <%=link_to "New post", new_post_url(@blog) %><br/><br/>
 <% end %>
 
 <% @posts.each do |p| %>
 <hr/>
-<h3><%=link_to p.title, post_url(@blog, p)%><%= @admin ? " - <i>#{link_to("Remove post", remove_post_url(p), {:method => :post})}</i>" : ""%></h3>
+<h3><%=link_to p.title, post_url(@blog, p)%></h3>
+<% if @admin %>
+<p><i><%=link_to("Remove post", remove_post_url(p), {:method => :post})%></i></p>
+<% end %>
 <pre>
 <%=p.content%>
 </pre>

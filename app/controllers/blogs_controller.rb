@@ -1,6 +1,6 @@
 class BlogsController < ApplicationController
   layout 'blog'
-  require_admin :new_post, :create_post, :create, :remove, :remove_post
+  require_admin :new_post, :create_post, :create, :remove, :remove_post, :remove_all_posts
 
   def start
     @posts = Post.all({}, :limit => 15, :iorder => :created_at)

@@ -50,4 +50,12 @@ class BlogsController < ApplicationController
 
     redirect_to blog_url(blog)
   end
+  
+  def remove_all_posts
+    Post.all.each do |p|
+      p.delete!
+    end
+    
+    redirect_to root_url
+  end
 end

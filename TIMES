@@ -1,0 +1,11 @@
+- /
+Rails: 500ms
+Cpu: 700ms
+
+- /blog/2010
+Rails: 150ms
+Cpu: 616ms
+
+- /blog/2010/4001
+Rails: 120ms
+Cpu: 290ms

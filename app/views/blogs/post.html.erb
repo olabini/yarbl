@@ -4,6 +4,6 @@
 <% if @admin %>
 <p><i><%=link_to("Remove post", remove_post_url(@post), {:method => :post})%></i></p>
 <% end %>
-<pre>
-<%=@post.content%>
-</pre>
+<p>
+<%=@post.content.gsub("\n", "<br/>")%>
+</p>
